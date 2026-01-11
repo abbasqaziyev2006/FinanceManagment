@@ -1,0 +1,116 @@
+﻿@model Finance.DAL.DataContext.Entities.Transaction
+@{
+    ViewData["Title"] = "Yeni Əməliyyat";
+}
+
+<div class="page-header">
+    <h2 class="fw-bold"><i class="bi bi-plus-circle"></i> Yeni Əməliyyat Əlavə Et</h2>
+    <p class="text-muted mb-0">Yeni maliyyə əməliyyatı yaradın</p>
+</div>
+
+<div class="row">
+    <div class="col-md-8 col-lg-6">
+        <div class="card">
+            <div class="card-body">
+                <form asp-action="Create" method="post">
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label">
+                            Təsvir <span class="text-danger">*</span>
+                        </label>
+                        <input asp-for="Description"
+                               class="form-control"
+                               placeholder="Əməliyyatın təsvirini daxil edin"
+                               required />
+                        <span asp-validation-for="Description" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Amount" class="form-label">
+                            Məbləğ (₼) <span class="text-danger">*</span>
+                        </label>
+                        <input asp-for="Amount"
+                               class="form-control"
+                               type="number"
+                               step="0.01"
+                               min="0"
+                               placeholder="0.00"
+                               required />
+                        <span asp-validation-for="Amount" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Type" class="form-label">
+                            Növ <span class="text-danger">*</span>
+                        </label>
+                        <select asp-for="Type" class="form-select" required>
+                            <option value="">Seçin...</option>
+                            <option value="0">Gəlir</option>
+                            <option value="1">Xərc</option>
+                        </select>
+                        <span asp-validation-for="Type" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Category" class="form-label">
+                            Kateqoriya <span class="text-danger">*</span>
+                        </label>
+                        <input asp-for="Category"
+                               class="form-control"
+                               placeholder="Məsələn: Satış, Maaş, Ofis xərcləri"
+                               list="categories"
+                               required />
+                        <datalist id="categories">
+                            <option value="Satış"></option>
+                            <option value="Xidmət"></option>
+                            <option value="Maaş"></option>
+                            <option value="İcarə"></option>
+                            <option value="Ofis xərcləri"></option>
+                            <option value="Marketinq"></option>
+                            <option value="Digər"></option>
+                        </datalist>
+                        <span asp-validation-for="Category" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Date" class="form-label">
+                            Tarix <span class="text-danger">*</span>
+                        </label>
+                        <input asp-for="Date"
+                               class="form-control"
+                               type="date"
+                               value="@DateTime.Now.ToString("yyyy-MM-dd")"
+                               required />
+                        <span asp-validation-for="Date" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> Yadda Saxla
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle"></i> Ləğv Et
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 col-lg-6">
+        <div class="card bg-light">
+            <div class="card-body">
+                <h6 class="fw-bold mb-3"><i class="bi bi-info-circle"></i> Məlumat</h6>
+                <ul class="small text-muted mb-0">
+                    <li class="mb-2">Bütün sahələr mütləqdir</li>
+                    <li class="mb-2">Məbləğ müsbət rəqəm olmalıdır</li>
+                    <li class="mb-2">Kateqoriyanı siyahıdan seçə və ya yeni daxil edə bilərsiniz</li>
+                    <li>Tarix keçmiş və ya cari ola bilər</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

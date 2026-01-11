@@ -1,0 +1,78 @@
+﻿@model IEnumerable<Finance.DAL.DataContext.Entities.Client>
+@{
+    ViewData["Title"] = "Müştərilər";
+}
+
+<div class="page-header d-flex justify-content-between align-items-center">
+    <div>
+        <h2 class="fw-bold"><i class="bi bi-people"></i> Müştərilər</h2>
+        <p class="text-muted mb-0">Müştəri bazasını idarə edin</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="bi bi-person-plus"></i> Yeni Müştəri
+    </a>
+</div>
+
+@if (Model != null && Model.Any())
+{
+    <div class="row g-4">
+        @foreach (var client in Model)
+        {
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <h5 class="fw-bold mb-1">@client.Name</h5>
+                                <p class="text-muted small mb-0">@client.Company</p>
+                            </div>
+                            <i class="bi bi-building text-primary" style="font-size: 2.5em; opacity: 0.2;"></i>
+                        </div>
+
+                        <hr>
+
+                        <div class="mb-2">
+                            <i class="bi bi-envelope text-muted"></i>
+                            <span class="ms-2 small">@client.Email</span>
+                        </div>
+                        <div class="mb-3">
+                            <i class="bi bi-telephone text-muted"></i>
+                            <span class="ms-2 small">@client.Phone</span>
+                        </div>
+
+                        <div class="text-muted small mb-3">
+                            <i class="bi bi-calendar"></i>
+                            <span class="ms-2">@client.CreatedDate.ToString("dd.MM.yyyy")</span>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <a asp-action="Edit" asp-route-id="@client.Id" class="btn btn-sm btn-outline-primary flex-fill">
+                                <i class="bi bi-pencil"></i> Redaktə
+                            </a>
+                            <form asp-action="Delete" asp-route-id="@client.Id" method="post" class="flex-fill">
+                                @Html.AntiForgeryToken()
+                                <button type="submit"
+                                        class="btn btn-sm btn-outline-danger w-100"
+                                        onclick="return confirm('@client.Name müştərisini silmək istədiyinizdən əminsiniz?')">
+                                    <i class="bi bi-trash"></i> Sil
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="card">
+        <div class="card-body text-center py-5">
+            <i class="bi bi-people" style="font-size: 4em; color: #cbd5e1;"></i>
+            <p class="text-muted mt-3 mb-3">Heç bir müştəri tapılmadı</p>
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-person-plus"></i> İlk müştərini əlavə et
+            </a>
+        </div>
+    </div>
+}

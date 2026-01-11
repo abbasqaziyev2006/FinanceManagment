@@ -1,0 +1,99 @@
+﻿@model Finance.DAL.DataContext.Entities.Client
+@{
+    ViewData["Title"] = "Yeni Müştəri";
+}
+
+<div class="page-header">
+    <h2 class="fw-bold"><i class="bi bi-person-plus"></i> Yeni Müştəri Əlavə Et</h2>
+    <p class="text-muted mb-0">Yeni müştəri məlumatlarını daxil edin</p>
+</div>
+
+<div class="row">
+    <div class="col-md-8 col-lg-6">
+        <div class="card">
+            <div class="card-body">
+                <form asp-action="Create" method="post">
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label">
+                            Ad Soyad <span class="text-danger">*</span>
+                        </label>
+                        <input asp-for="Name"
+                               class="form-control"
+                               placeholder="Müştərinin tam adı"
+                               required />
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Company" class="form-label">
+                            Şirkət <span class="text-danger">*</span>
+                        </label>
+                        <input asp-for="Company"
+                               class="form-control"
+                               placeholder="Şirkət adı"
+                               required />
+                        <span asp-validation-for="Company" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label">
+                            Email <span class="text-danger">*</span>
+                        </label>
+                        <input asp-for="Email"
+                               class="form-control"
+                               type="email"
+                               placeholder="email@example.com"
+                               required />
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Phone" class="form-label">
+                            Telefon <span class="text-danger">*</span>
+                        </label>
+                        <input asp-for="Phone"
+                               class="form-control"
+                               type="tel"
+                               placeholder="+994 XX XXX XX XX"
+                               required />
+                        <span asp-validation-for="Phone" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> Yadda Saxla
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle"></i> Ləğv Et
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 col-lg-6">
+        <div class="card bg-light">
+            <div class="card-body">
+                <h6 class="fw-bold mb-3"><i class="bi bi-info-circle"></i> Məlumat</h6>
+                <ul class="small text-muted mb-0">
+                    <li class="mb-2">Bütün sahələr mütləqdir</li>
+                    <li class="mb-2">Email düzgün formatda olmalıdır</li>
+                    <li class="mb-2">Telefon nömrəsi beynəlxalq formatda daxil edilə bilər</li>
+                    <li>Müştəri məlumatları sonradan redaktə edilə bilər</li>
+                </ul>
+
+                <hr class="my-3">
+
+                <h6 class="fw-bold mb-3"><i class="bi bi-lightbulb"></i> Məsləhət</h6>
+                <p class="small text-muted mb-0">
+                    Müştəri əlavə etdikdən sonra onun üçün faktura yarada bilərsiniz.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

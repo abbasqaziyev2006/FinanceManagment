@@ -1,0 +1,80 @@
+﻿@model IEnumerable<Finance.DAL.DataContext.Entities.Transaction>
+@{
+    ViewData["Title"] = "Əməliyyatlar";
+}
+
+<div class="page-header d-flex justify-content-between align-items-center">
+    <div>
+        <h2 class="fw-bold"><i class="bi bi-arrow-left-right"></i> Əməliyyatlar</h2>
+        <p class="text-muted mb-0">Bütün maliyyə əməliyyatlarını idarə edin</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Yeni Əməliyyat
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        @if (Model != null && Model.Any())
+        {
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Tarix</th>
+                        <th>Təsvir</th>
+                        <th>Kateqoriya</th>
+                        <th>Növ</th>
+                        <th class="text-end">Məbləğ</th>
+                        <th class="text-center" style="width: 150px;">Əməliyyatlar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Date.ToString("dd.MM.yyyy")</td>
+                            <td>@item.Description</td>
+                            <td><span class="badge bg-secondary">@item.Category</span></td>
+                            <td>
+                                @if (item.Type == Finance.DAL.DataContext.Entities.TransactionType.Income)
+                                {
+                                    <span class="badge bg-success">Gəlir</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Xərc</span>
+                                }
+                            </td>
+                            <td class="text-end fw-bold @(item.Type == Finance.DAL.DataContext.Entities.TransactionType.Income ? "text-success" : "text-danger")">
+                                @(item.Type == Finance.DAL.DataContext.Entities.TransactionType.Income ? "+" : "-")₼@item.Amount.ToString("N2")
+                            </td>
+                            <td class="text-center">
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary" title="Redaktə et">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-sm btn-outline-danger"
+                                            onclick="return confirm('Bu əməliyyatı silmək istədiyinizdən əminsiniz?')"
+                                            title="Sil">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <i class="bi bi-inbox" style="font-size: 4em; color: #cbd5e1;"></i>
+                <p class="text-muted mt-3 mb-3">Heç bir əməliyyat tapılmadı</p>
+                <a asp-action="Create" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> İlk əməliyyatı əlavə et
+                </a>
+            </div>
+        }
+    </div>
+</div>

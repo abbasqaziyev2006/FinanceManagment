@@ -1,0 +1,141 @@
+﻿@model Finance.DAL.DataContext.Entities.Invoice
+@{
+    ViewData["Title"] = "Yeni Faktura";
+    var clients = ViewBag.Clients as IEnumerable<Finance.DAL.DataContext.Entities.Client>;
+}
+
+<div class="page-header">
+    <h2 class="fw-bold"><i class="bi bi-plus-circle"></i> Yeni Faktura Yarat</h2>
+    <p class="text-muted mb-0">Müştəri üçün yeni faktura yaradın</p>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <form asp-action="Create" method="post">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="ClientId" class="form-label">
+                                Müştəri <span class="text-danger">*</span>
+                            </label>
+                            <select asp-for="ClientId" class="form-select" required>
+                                <option value="">Müştəri seçin...</option>
+                                @if (clients != null)
+                                {
+                                    @foreach (var client in clients)
+                                    {
+                                        <option value="@client.Id">@client.Name - @client.Company</option>
+                                    }
+                                }
+                            </select>
+                            <span asp-validation-for="ClientId" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Amount" class="form-label">
+                                Məbləğ (₼) <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="Amount"
+                                   class="form-control"
+                                   type="number"
+                                   step="0.01"
+                                   min="0"
+                                   placeholder="0.00"
+                                   required />
+                            <span asp-validation-for="Amount" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="IssueDate" class="form-label">
+                                Faktura Tarixi <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="IssueDate"
+                                   class="form-control"
+                                   type="date"
+                                   value="@DateTime.Now.ToString("yyyy-MM-dd")"
+                                   required />
+                            <span asp-validation-for="IssueDate" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="DueDate" class="form-label">
+                                Son Ödəmə Tarixi <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="DueDate"
+                                   class="form-control"
+                                   type="date"
+                                   value="@DateTime.Now.AddDays(30).ToString("yyyy-MM-dd")"
+                                   required />
+                            <span asp-validation-for="DueDate" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Status" class="form-label">
+                            Status <span class="text-danger">*</span>
+                        </label>
+                        <select asp-for="Status" class="form-select" required>
+                            <option value="0">Qaralama</option>
+                            <option value="1" selected>Göndərilib</option>
+                            <option value="2">Ödənilib</option>
+                            <option value="3">Gecikib</option>
+                            <option value="4">Ləğv edilib</option>
+                        </select>
+                        <span asp-validation-for="Status" class="text-danger small"></span>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i>
+                        <strong>Qeyd:</strong> Faktura nömrəsi avtomatik yaradılacaq
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> Faktura Yarat
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle"></i> Ləğv Et
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card bg-light">
+            <div class="card-body">
+                <h6 class="fw-bold mb-3"><i class="bi bi-info-circle"></i> Məlumat</h6>
+                <ul class="small text-muted mb-0">
+                    <li class="mb-2">Müştəri siyahıdan seçilməlidir</li>
+                    <li class="mb-2">Son ödəmə tarixi faktura tarixindən sonra olmalıdır</li>
+                    <li class="mb-2">Status faktura vəziyyətini göstərir</li>
+                    <li>Faktura nömrəsi avtomatik yaradılır</li>
+                </ul>
+
+                <hr class="my-3">
+
+                <h6 class="fw-bold mb-3"><i class="bi bi-lightbulb"></i> Məsləhət</h6>
+                <p class="small text-muted mb-0">
+                    Standart olaraq 30 günlük ödəmə müddəti təyin olunur. İstədiyiniz müddəti seçə bilərsiniz.
+                </p>
+            </div>
+        </div>
+
+        @if (clients == null || !clients.Any())
+        {
+            <div class="alert alert-warning mt-3">
+                <i class="bi bi-exclamation-triangle"></i>
+                <strong>Diqqət!</strong> Faktura yaratmaq üçün əvvəlcə müştəri əlavə etməlisiniz.
+                <a asp-controller="Clients" asp-action="Create" class="alert-link">Müştəri əlavə et</a>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

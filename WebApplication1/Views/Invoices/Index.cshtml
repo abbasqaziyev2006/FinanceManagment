@@ -1,0 +1,152 @@
+﻿@model IEnumerable<Finance.DAL.DataContext.Entities.Invoice>
+@{
+    ViewData["Title"] = "Fakturalar";
+}
+
+<div class="page-header d-flex justify-content-between align-items-center">
+    <div>
+        <h2 class="fw-bold"><i class="bi bi-file-text"></i> Fakturalar</h2>
+        <p class="text-muted mb-0">Bütün faturaları idarə edin</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Yeni Faktura
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        @if (Model != null && Model.Any())
+        {
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Faktura №</th>
+                        <th>Müştəri</th>
+                        <th>Tarix</th>
+                        <th>Son Tarix</th>
+                        <th>Status</th>
+                        <th class="text-end">Məbləğ</th>
+                        <th class="text-center" style="width: 150px;">Əməliyyatlar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var invoice in Model)
+                    {
+                        <tr>
+                            <td><strong>@invoice.InvoiceNumber</strong></td>
+                            <td>
+                                @if (invoice.Client != null)
+                                {
+                                    <div>@invoice.Client.Name</div>
+                                    <small class="text-muted">@invoice.Client.Company</small>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">-</span>
+                                }
+                            </td>
+                            <td>@invoice.IssueDate.ToString("dd.MM.yyyy")</td>
+                            <td>
+                                @if (invoice.DueDate < DateTime.Now && invoice.Status != Finance.DAL.DataContext.Entities.InvoiceStatus.Paid)
+                                {
+                                    <span class="text-danger fw-bold">@invoice.DueDate.ToString("dd.MM.yyyy")</span>
+                                    <small class="text-danger d-block">Gecikib</small>
+                                }
+                                else
+                                {
+                                    @invoice.DueDate.ToString("dd.MM.yyyy")
+                                }
+                            </td>
+                            <td>
+                                @switch (invoice.Status)
+                                {
+                                    case Finance.DAL.DataContext.Entities.InvoiceStatus.Draft:
+                                        <span class="badge bg-secondary">Qaralama</span>
+                                        break;
+                                    case Finance.DAL.DataContext.Entities.InvoiceStatus.Sent:
+                                        <span class="badge bg-primary">Göndərilib</span>
+                                        break;
+                                    case Finance.DAL.DataContext.Entities.InvoiceStatus.Paid:
+                                        <span class="badge bg-success">Ödənilib</span>
+                                        break;
+                                    case Finance.DAL.DataContext.Entities.InvoiceStatus.Overdue:
+                                        <span class="badge bg-danger">Gecikib</span>
+                                        break;
+                                    case Finance.DAL.DataContext.Entities.InvoiceStatus.Cancelled:
+                                        <span class="badge bg-dark">Ləğv edilib</span>
+                                        break;
+                                }
+                            </td>
+                            <td class="text-end fw-bold">₼@invoice.Amount.ToString("N2")</td>
+                            <td class="text-center">
+                                <a asp-action="Details" asp-route-id="@invoice.Id" class="btn btn-sm btn-outline-info" title="Ətraflı">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a asp-action="Edit" asp-route-id="@invoice.Id" class="btn btn-sm btn-outline-primary" title="Redaktə">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <form asp-action="Delete" asp-route-id="@invoice.Id" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit"
+                                            class="btn btn-sm btn-outline-danger"
+                                            onclick="return confirm('Bu fakturanı silmək istədiyinizdən əminsiniz?')"
+                                            title="Sil">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <i class="bi bi-file-text" style="font-size: 4em; color: #cbd5e1;"></i>
+                <p class="text-muted mt-3 mb-3">Heç bir faktura tapılmadı</p>
+                <a asp-action="Create" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> İlk fakturanı yarat
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+@if (Model != null && Model.Any())
+{
+    <div class="row g-3 mt-3">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h6 class="text-muted small">Ümumi Fakturalar</h6>
+                    <h3 class="fw-bold mb-0">@Model.Count()</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h6 class="text-muted small">Ödənilib</h6>
+                    <h3 class="fw-bold text-success mb-0">@Model.Count(i => i.Status == Finance.DAL.DataContext.Entities.InvoiceStatus.Paid)</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h6 class="text-muted small">Gözləyir</h6>
+                    <h3 class="fw-bold text-warning mb-0">@Model.Count(i => i.Status == Finance.DAL.DataContext.Entities.InvoiceStatus.Sent)</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h6 class="text-muted small">Ümumi Məbləğ</h6>
+                    <h3 class="fw-bold text-primary mb-0">₼@Model.Sum(i => i.Amount).ToString("N2")</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+}

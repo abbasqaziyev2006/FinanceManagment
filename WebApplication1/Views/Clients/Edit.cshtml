@@ -1,0 +1,124 @@
+﻿@model Finance.DAL.DataContext.Entities.Client
+@{
+    ViewData["Title"] = "Müştərini Redaktə Et";
+}
+
+<div class="page-header">
+    <h2 class="fw-bold"><i class="bi bi-pencil"></i> Müştərini Redaktə Et</h2>
+    <p class="text-muted mb-0">Müştəri məlumatlarını yeniləyin</p>
+</div>
+
+<div class="row">
+    <div class="col-md-8 col-lg-6">
+        <div class="card">
+            <div class="card-body">
+                <form asp-action="Edit" method="post">
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="CreatedDate" />
+
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label">
+                            Ad Soyad <span class="text-danger">*</span>
+                        </label>
+                        <input asp-for="Name"
+                               class="form-control"
+                               placeholder="Müştərinin tam adı"
+                               required />
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Company" class="form-label">
+                            Şirkət <span class="text-danger">*</span>
+                        </label>
+                        <input asp-for="Company"
+                               class="form-control"
+                               placeholder="Şirkət adı"
+                               required />
+                        <span asp-validation-for="Company" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label">
+                            Email <span class="text-danger">*</span>
+                        </label>
+                        <input asp-for="Email"
+                               class="form-control"
+                               type="email"
+                               placeholder="email@example.com"
+                               required />
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Phone" class="form-label">
+                            Telefon <span class="text-danger">*</span>
+                        </label>
+                        <input asp-for="Phone"
+                               class="form-control"
+                               type="tel"
+                               placeholder="+994 XX XXX XX XX"
+                               required />
+                        <span asp-validation-for="Phone" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> Yenilə
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle"></i> Ləğv Et
+                        </a>
+                        <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="ms-auto">
+                            @Html.AntiForgeryToken()
+                            <button type="submit"
+                                    class="btn btn-outline-danger"
+                                    onclick="return confirm('@Model.Name müştərisini silmək istədiyinizdən əminsiniz?')">
+                                <i class="bi bi-trash"></i> Sil
+                            </button>
+                        </form>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 col-lg-6">
+        <div class="card bg-light">
+            <div class="card-body">
+                <h6 class="fw-bold mb-3"><i class="bi bi-person-badge"></i> Müştəri Məlumatı</h6>
+                <div class="small text-muted">
+                    <p class="mb-2">
+                        <strong>ID:</strong> #@Model.Id
+                    </p>
+                    <p class="mb-2">
+                        <strong>Qeydiyyat tarixi:</strong> @Model.CreatedDate.ToString("dd.MM.yyyy")
+                    </p>
+                    <p class="mb-0">
+                        <strong>Cari şirkət:</strong> @Model.Company
+                    </p>
+                </div>
+
+                <hr class="my-3">
+
+                <h6 class="fw-bold mb-3"><i class="bi bi-info-circle"></i> Qeyd</h6>
+                <ul class="small text-muted mb-0">
+                    <li class="mb-2">Dəyişikliklər dərhal tətbiq olunacaq</li>
+                    <li class="mb-2">Email və telefon yenilənə bilər</li>
+                    <li>Müştərini silmək üçün sağ aşağıdakı düyməni istifadə edin</li>
+                </ul>
+
+                <hr class="my-3">
+
+                <div class="alert alert-warning small mb-0">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <strong>Diqqət:</strong> Müştərini silsəniz, onunla bağlı bütün fakturalar da silinəcək.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
