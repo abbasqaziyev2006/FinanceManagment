@@ -1,18 +1,21 @@
 ﻿@model Finance.DAL.DataContext.Entities.Transaction
 @{
-    ViewData["Title"] = "Yeni Əməliyyat";
+    ViewData["Title"] = "Əməliyyatı Redaktə Et";
 }
 
 <div class="page-header">
-    <h2 class="fw-bold"><i class="bi bi-plus-circle"></i> Yeni Əməliyyat Əlavə Et</h2>
-    <p class="text-muted mb-0">Yeni maliyyə əməliyyatı yaradın</p>
+    <h2 class="fw-bold"><i class="bi bi-pencil-square"></i> Əməliyyatı Redaktə Et</h2>
+    <p class="text-muted mb-0">Mövcud maliyyə əməliyyatını yeniləyin</p>
 </div>
 
 <div class="row">
     <div class="col-md-8 col-lg-6">
         <div class="card">
             <div class="card-body">
-                <form asp-action="Create" method="post">
+                <form asp-action="Edit" method="post">
+                    @Html.AntiForgeryToken()
+                    <input asp-for="Id" type="hidden" />
+
                     <div class="mb-3">
                         <label asp-for="Description" class="form-label">
                             Təsvir <span class="text-danger">*</span>
@@ -78,7 +81,6 @@
                         <input asp-for="Date"
                                class="form-control"
                                type="date"
-                               value="@DateTime.Now.ToString("yyyy-MM-dd")"
                                required />
                         <span asp-validation-for="Date" class="text-danger small"></span>
                     </div>
